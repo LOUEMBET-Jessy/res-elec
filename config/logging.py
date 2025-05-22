@@ -32,5 +32,6 @@ def configure_logging(app):
     app.logger.setLevel(logging.INFO)
 
     # Désactiver le logging de Werkzeug en production
-    if app.config['FLASK_ENV'] == 'production':
+    is_production = os.environ.get('FLASK_ENV') == 'production' or os.environ.get('ENVIRONMENT') == 'production'
+    if is_production:
         logging.getLogger('werkzeug').setLevel(logging.ERROR) 
