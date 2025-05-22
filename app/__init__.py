@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -49,6 +50,6 @@ def create_app(config_class=Config):
     app.register_blueprint(voting_bp, url_prefix='/api/voting')
 
     # Log startup
-    app.logger.info('Application démarrée en mode %s', app.config['FLASK_ENV'])
+    app.logger.info('Application démarrée en mode %s', os.getenv('APP_ENV', 'development'))
 
     return app
