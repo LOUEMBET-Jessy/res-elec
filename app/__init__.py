@@ -53,3 +53,5 @@ def create_app(config_class=Config):
     app.logger.info('Application démarrée en mode %s', os.getenv('APP_ENV', 'development'))
 
     return app
+
+app = create_app()

@@ -1,31 +1,31 @@
 # RES-ELEC API
 
-API backend pour la gestion des Èlections au Gabon.
+API backend pour la gestion des √©lections au Gabon.
 
-## Technologies utilisÈes
+## Technologies utilis√©es
 
 - Python 3.8+
 - Flask
 - SQLAlchemy
-- JWT pour l''authentification
-- PostgreSQL (production) / SQLite (dÈveloppement)
+- JWT pour l'authentification
+- PostgreSQL (production) / SQLite (d√©veloppement)
 
 ## Installation
 
 1. Cloner le repository
-2. CrÈer un environnement virtuel :
+2. Cr√©er un environnement virtuel :
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
 ```
 
-3. Installer les dÈpendances :
+3. Installer les d√©pendances :
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Configurer les variables d''environnement dans un fichier .env :
+4. Configurer les variables d'environnement dans un fichier .env :
 ```
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret
@@ -38,43 +38,43 @@ MAIL_PASSWORD=your-email-password
 MAIL_DEFAULT_SENDER=your-email@gmail.com
 ```
 
-5. Initialiser la base de donnÈes :
+5. Initialiser la base de donn√©es :
 ```bash
 flask db init
 flask db migrate
 flask db upgrade
 ```
 
-6. Lancer l''application :
+6. Lancer l'application :
 ```bash
 python run.py
 ```
 
-## Structure de l''API
+## Structure de l'API
 
 ### Authentification
 
-- POST /api/auth/register : Inscription d''un directeur de campagne
+- POST /api/auth/register : Inscription d'un directeur de campagne
 - POST /api/auth/login : Connexion
-- POST /api/auth/refresh : RafraÓchissement du token
-- POST /api/auth/forgot-password : RÈinitialisation du mot de passe
+- POST /api/auth/refresh : Rafra√Æchissement du token
+- POST /api/auth/forgot-password : R√©initialisation du mot de passe
 - GET /api/auth/profile : Obtenir le profil
-- PUT /api/auth/profile : Mettre ‡ jour le profil
+- PUT /api/auth/profile : Mettre √† jour le profil
 
-### …lections
+### √âlections
 
-- POST /api/elections : CrÈer une Èlection
-- GET /api/elections : Liste des Èlections
-- GET /api/elections/<id> : DÈtails d''une Èlection
-- PUT /api/elections/<id> : Modifier une Èlection
-- DELETE /api/elections/<id> : Supprimer une Èlection
-- GET /api/elections/<id>/results : RÈsultats d''une Èlection
+- POST /api/elections : Cr√©er une √©lection
+- GET /api/elections : Liste des √©lections
+- GET /api/elections/<id> : D√©tails d'une √©lection
+- PUT /api/elections/<id> : Modifier une √©lection
+- DELETE /api/elections/<id> : Supprimer une √©lection
+- GET /api/elections/<id>/results : R√©sultats d'une √©lection
 
 ### Candidats
 
 - POST /api/candidates : Ajouter un candidat
 - GET /api/candidates : Liste des candidats
-- GET /api/candidates/<id> : DÈtails d''un candidat
+- GET /api/candidates/<id> : D√©tails d'un candidat
 - PUT /api/candidates/<id> : Modifier un candidat
 - DELETE /api/candidates/<id> : Supprimer un candidat
 
@@ -82,32 +82,53 @@ python run.py
 
 - POST /api/elections/<id>/centers : Ajouter un centre de vote
 - POST /api/centers/<id>/offices : Ajouter un bureau de vote
-- POST /api/offices/<id>/results : Soumettre les rÈsultats
-- GET /api/offices/<id>/results : Obtenir les rÈsultats d''un bureau
-- PUT /api/offices/<id>/results : Mettre ‡ jour les rÈsultats
+- POST /api/offices/<id>/results : Soumettre les r√©sultats
+- GET /api/offices/<id>/results : Obtenir les r√©sultats d'un bureau
+- PUT /api/offices/<id>/results : Mettre √† jour les r√©sultats
 
-### RÈsultats en temps rÈel
+### R√©sultats en temps r√©el
 
-- GET /api/voting/realtime/<election_id> : Obtenir les rÈsultats en temps rÈel
+- GET /api/voting/realtime/<election_id> : Obtenir les r√©sultats en temps r√©el
 
-## SÈcuritÈ
+## S√©curit√©
 
 - Authentification JWT
 - Protection CSRF
-- Validation des donnÈes
-- Gestion sÈcurisÈe des fichiers
+- Validation des donn√©es
+- Gestion s√©curis√©e des fichiers
 - Hachage des mots de passe
 - Rate limiting
-- CORS configurÈ
+- CORS configur√©
 
 ## Contribution
 
 1. Fork le projet
-2. CrÈer une branche (`git checkout -b feature/amazing-feature`)
-3. Commit les changements (`git commit -m ''Add amazing feature''`)
+2. Cr√©er une branche (`git checkout -b feature/amazing-feature`)
+3. Commit les changements (`git commit -m 'Add amazing feature'`)
 4. Push la branche (`git push origin feature/amazing-feature`)
 5. Ouvrir une Pull Request
 
 ## License
 
 MIT
+
+## D√©ploiement sur Render
+
+Pour d√©ployer sur Render, configure les variables d'environnement suivantes dans l'interface Render (onglet Environment) :
+
+- `SECRET_KEY` : une cl√© secr√®te pour Flask
+- `JWT_SECRET_KEY` : une cl√© secr√®te pour JWT
+- `DATABASE_URL` : l'URL de connexion √† ta base PostgreSQL Render (ex : `postgresql://USER:PASSWORD@HOST:PORT/DBNAME`)
+- `MAIL_SERVER` : le serveur SMTP (ex : `smtp.gmail.com`)
+- `MAIL_PORT` : le port SMTP (ex : `587`)
+- `MAIL_USE_TLS` : `True` ou `False`
+- `MAIL_USERNAME` : ton email d'envoi
+- `MAIL_PASSWORD` : le mot de passe de l'email
+- `MAIL_DEFAULT_SENDER` : l'email d'envoi par d√©faut
+- `CORS_ORIGINS` : (optionnel) les origines autoris√©es, ex : `*` ou `https://ton-frontend.com`
+
+**Important** :
+- Le dossier `uploads/` n'est pas persistant sur Render. Utilise un stockage externe (S3, Cloudinary, etc.) pour les fichiers si besoin.
+- Le port est automatiquement g√©r√© par Render via la variable `PORT`.
+
+Apr√®s avoir configur√© ces variables, ton API sera accessible publiquement via l'URL fournie par Render.
