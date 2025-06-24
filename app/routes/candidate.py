@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.election import Candidate
 from app import db
 from datetime import datetime
+from app.utils.file_upload import save_file
 
 candidate_bp = Blueprint('candidate', __name__, url_prefix='/api/candidats')
 
@@ -32,18 +33,36 @@ def liste_candidats():
 @jwt_required()
 def ajouter_candidat():
     try:
-        data = request.get_json()
         current_user_id = get_jwt_identity()
+        print("form:", request.form)
+        print("files:", request.files)
+        prenom = request.form.get('prenom')
+        nom = request.form.get('nom')
+        parti = request.form.get('parti')
+        biographie = request.form.get('biographie')
+        election_id = request.form.get('election_id')
+        statut = request.form.get('statut', 'en_attente')
+        logo_parti = None
+        photo = None
+
+        # Gestion des fichiers
+        if 'logo_parti' in request.files:
+            logo_file = request.files['logo_parti']
+            # Sauvegarde le fichier et récupère le chemin (à adapter selon ta logique)
+            logo_parti = save_file(logo_file, 'logos')  # à adapter selon ta fonction
+        if 'photo' in request.files:
+            photo_file = request.files['photo']
+            photo = save_file(photo_file, 'profiles')  # à adapter selon ta fonction
 
         candidat = Candidate(
-            prenom=data.get('prenom'),
-            nom=data.get('nom'),
-            parti=data.get('parti'),
-            logo_parti=data.get('logo_parti'),
-            photo=data.get('photo'),
-            biographie=data.get('biographie'),
-            election_id=data.get('election_id'),
-            statut=data.get('statut', 'en_attente'),
+            prenom=prenom,
+            nom=nom,
+            parti=parti,
+            logo_parti=logo_parti,
+            photo=photo,
+            biographie=biographie,
+            election_id=election_id,
+            statut=statut,
             cree_par=current_user_id
         )
         db.session.add(candidat)
