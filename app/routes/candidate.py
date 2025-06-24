@@ -124,16 +124,43 @@ def modifier_candidat(candidat_id):
         if not candidat:
             return jsonify({'message': 'Candidat non trouvé'}), 404
 
-        data = request.get_json()
-        candidat.prenom = data.get('prenom', candidat.prenom)
-        candidat.nom = data.get('nom', candidat.nom)
-        candidat.parti = data.get('parti', candidat.parti)
-        candidat.logo_parti = data.get('logo_parti', candidat.logo_parti)
-        candidat.photo = data.get('photo', candidat.photo)
-        candidat.biographie = data.get('biographie', candidat.biographie)
-        candidat.election_id = data.get('election_id', candidat.election_id)
-        candidat.statut = data.get('statut', candidat.statut)
-        candidat.date_modification = datetime.utcnow()
+        # Si c'est du form-data (pour fichiers)
+        if request.content_type and request.content_type.startswith('multipart/form-data'):
+            prenom = request.form.get('prenom', candidat.prenom)
+            nom = request.form.get('nom', candidat.nom)
+            parti = request.form.get('parti', candidat.parti)
+            biographie = request.form.get('biographie', candidat.biographie)
+            election_id = request.form.get('election_id', candidat.election_id)
+            statut = request.form.get('statut', candidat.statut)
+
+            # Gestion des fichiers
+            if 'logo_parti' in request.files:
+                logo_file = request.files['logo_parti']
+                candidat.logo_parti = save_file(logo_file, 'logos')
+            if 'photo' in request.files:
+                photo_file = request.files['photo']
+                candidat.photo = save_file(photo_file, 'profiles')
+
+            candidat.prenom = prenom
+            candidat.nom = nom
+            candidat.parti = parti
+            candidat.biographie = biographie
+            candidat.election_id = election_id
+            candidat.statut = statut
+            candidat.date_modification = datetime.utcnow()
+
+        # Sinon, c'est du JSON
+        else:
+            data = request.get_json()
+            candidat.prenom = data.get('prenom', candidat.prenom)
+            candidat.nom = data.get('nom', candidat.nom)
+            candidat.parti = data.get('parti', candidat.parti)
+            candidat.logo_parti = data.get('logo_parti', candidat.logo_parti)
+            candidat.photo = data.get('photo', candidat.photo)
+            candidat.biographie = data.get('biographie', candidat.biographie)
+            candidat.election_id = data.get('election_id', candidat.election_id)
+            candidat.statut = data.get('statut', candidat.statut)
+            candidat.date_modification = datetime.utcnow()
 
         db.session.commit()
 
