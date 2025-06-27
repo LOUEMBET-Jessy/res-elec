@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models.election import Candidate
+from app.models.election import Candidate, Election
 from app import db
 from datetime import datetime
 from app.utils.file_upload import save_file
@@ -44,6 +44,14 @@ def ajouter_candidat():
         statut = request.form.get('statut', 'en_attente')
         logo_parti = None
         photo = None
+
+        # Vérifier que l'élection existe
+        if not Election.query.get(election_id):
+            return jsonify({'message': "L'élection spécifiée n'existe pas"}), 400
+
+        # Vérifier unicité des infos personnelles (prénom, nom, parti, élection)
+        if Candidate.query.filter_by(prenom=prenom, nom=nom, parti=parti, election_id=election_id).first():
+            return jsonify({'message': 'Un candidat avec ces informations existe déjà pour cette élection'}), 400
 
         # Gestion des fichiers
         if 'logo_parti' in request.files:

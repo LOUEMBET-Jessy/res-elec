@@ -24,6 +24,9 @@ def liste_circonscriptions():
 @jwt_required()
 def creer_circonscription():
     data = request.get_json()
+    # Vérifier unicité du nom
+    if Circonscription.query.filter_by(nom=data.get('nom')).first():
+        return jsonify({'message': 'Nom de circonscription déjà utilisé'}), 400
     circonscription = Circonscription(
         nom=data.get('nom'),
         description=data.get('description')
@@ -67,6 +70,11 @@ def liste_centres():
 @jwt_required()
 def creer_centre():
     data = request.get_json()
+    # Vérifier unicité du nom
+    if CentreVote.query.filter_by(nom=data.get('nom')).first():
+        return jsonify({'message': 'Nom de centre de vote déjà utilisé'}), 400
+    if not Circonscription.query.get(data.get('circonscription_id')):
+        return jsonify({'message': 'Circonscription inexistante'}), 400
     centre = CentreVote(
         nom=data.get('nom'),
         adresse=data.get('adresse'),
@@ -112,6 +120,11 @@ def liste_bureaux():
 @jwt_required()
 def creer_bureau():
     data = request.get_json()
+    # Vérifier unicité du nom
+    if BureauVote.query.filter_by(nom=data.get('nom')).first():
+        return jsonify({'message': 'Nom de bureau de vote déjà utilisé'}), 400
+    if not CentreVote.query.get(data.get('centre_id')):
+        return jsonify({'message': 'Centre de vote inexistant'}), 400
     bureau = BureauVote(
         nom=data.get('nom'),
         centre_id=data.get('centre_id'),

@@ -6,6 +6,7 @@ from app import db
 from app.utils.file_upload import save_file
 import os
 from datetime import datetime
+from app.models.user import User
 
 election_bp = Blueprint('election', __name__, url_prefix='/api/elections')
 election_schema = ElectionSchema()
@@ -37,11 +38,12 @@ def creer_election():
     try:
         data = request.get_json()
         current_user_id = get_jwt_identity()
-
+        # Vérifier que l'utilisateur existe
+        if not User.query.get(current_user_id):
+            return jsonify({'message': "Utilisateur (créateur) inexistant"}), 400
         # Convertir les dates en supprimant le 'Z' et en utilisant le format ISO
         date_debut = data.get('date_debut').replace('Z', '')
         date_fin = data.get('date_fin').replace('Z', '')
-
         election = Election(
             nom=data.get('nom'),
             description=data.get('description'),
@@ -53,7 +55,6 @@ def creer_election():
         )
         db.session.add(election)
         db.session.commit()
-
         return jsonify({
             'message': 'Élection créée avec succès',
             'election': {
@@ -69,7 +70,6 @@ def creer_election():
                 'date_modification': election.date_modification
             }
         }), 201
-
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': str(e)}), 500

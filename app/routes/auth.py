@@ -403,10 +403,16 @@ def liste_utilisateurs():
 def creer_utilisateur():
     try:
         data = request.get_json()
+        # Vérification unicité email/téléphone
+        if User.query.filter_by(email=data.get('email')).first():
+            return jsonify({'message': 'Email déjà utilisé'}), 400
+        if User.query.filter_by(phone_number=data.get('phone_number')).first():
+            return jsonify({'message': 'Numéro de téléphone déjà utilisé'}), 400
         utilisateur = User(
             email=data.get('email'),
             prenom=data.get('prenom'),
             nom=data.get('nom'),
+            phone_number=data.get('phone_number'),
             role=data.get('role', 'collaborator'),
             est_actif=data.get('est_actif', True)
         )
@@ -420,6 +426,7 @@ def creer_utilisateur():
                 'email': utilisateur.email,
                 'prenom': utilisateur.prenom,
                 'nom': utilisateur.nom,
+                'phone_number': utilisateur.phone_number,
                 'role': utilisateur.role,
                 'est_actif': utilisateur.est_actif,
                 'derniere_connexion': utilisateur.derniere_connexion,
