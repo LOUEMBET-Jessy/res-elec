@@ -1,0 +1,113 @@
+erDiagram
+  CIRCONSCRIPTION {
+    int id PK
+    string nom
+    string description
+    datetime date_creation
+    datetime date_modification
+  }
+  CENTREVOTE {
+    int id PK
+    string nom
+    string adresse
+    int circonscription_id FK
+    datetime date_creation
+    datetime date_modification
+  }
+  BUREAUVOTE {
+    int id PK
+    string nom
+    int centre_id FK
+    int electeurs_inscrits
+    string personne_contact
+    string telephone_contact
+    json localisation
+    boolean est_actif
+    datetime date_creation
+    datetime date_modification
+  }
+  ELECTION {
+    int id PK
+    string nom
+    text description
+    datetime date_debut
+    datetime date_fin
+    string statut
+    string type
+    int cree_par FK
+    datetime date_creation
+    datetime date_modification
+  }
+  CANDIDATE {
+    int id PK
+    string prenom
+    string nom
+    string parti
+    string logo_parti
+    string photo
+    text biographie
+    int election_id FK
+    string statut
+    int cree_par FK
+    datetime date_creation
+    datetime date_modification
+  }
+  RESULTATELECTION {
+    int id PK
+    int election_id FK
+    int bureau_vote_id FK
+    int electeurs_inscrits
+    int total_votes
+    int votes_valides
+    int votes_invalides
+    int votes_blancs
+    json resultats_candidats
+    int soumis_par FK
+    datetime date_soumission
+    string statut
+    text remarques
+    datetime date_creation
+    datetime date_modification
+  }
+  USER {
+    int id PK
+    string email
+    string prenom
+    string nom
+    string phone_number
+    string password_hash
+    string role
+    boolean est_actif
+    datetime derniere_connexion
+    datetime date_creation
+    datetime date_modification
+  }
+  JOURNAL_AUDIT {
+    int id PK
+    string action
+    int utilisateur_id FK
+    string agent_utilisateur
+    string adresse_ip
+    json metadonnees
+    datetime date_creation
+  }
+  SESSION {
+    int id PK
+    int utilisateur_id FK
+    string jeton
+    datetime expiration
+    string agent_utilisateur
+    string adresse_ip
+    datetime date_creation
+  }
+  
+  CIRCONSCRIPTION ||--o{ CENTREVOTE : "contient"
+  CENTREVOTE ||--o{ BUREAUVOTE : "contient"
+  ELECTION ||--o{ CANDIDATE : "contient"
+  ELECTION ||--o{ RESULTATELECTION : "a des résultats"
+  BUREAUVOTE ||--o{ RESULTATELECTION : "a des résultats"
+  USER ||--o{ ELECTION : "crée"
+  USER ||--o{ CANDIDATE : "crée"
+  USER ||--o{ RESULTATELECTION : "soumet"
+  USER ||--o{ JOURNAL_AUDIT : "effectue"
+  USER ||--o{ SESSION : "a" 

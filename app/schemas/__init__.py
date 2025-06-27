@@ -65,20 +65,32 @@ class CandidatSchema(Schema):
     date_creation = fields.DateTime(dump_only=True)
     date_modification = fields.DateTime(dump_only=True)
 
-class BureauDeVoteSchema(Schema):
-    id = fields.Int(dump_only=True)
-    nom = fields.Str(required=True)
-    adresse = fields.Str(required=True)
-    region = fields.Str(required=True)
-    departement = fields.Str(required=True)
-    commune = fields.Str(required=True)
-    localisation = fields.Dict(required=True)
-    electeurs_inscrits = fields.Int(required=True)
+class CirconscriptionSchema(Schema):
+    id = fields.Int()
+    nom = fields.Str()
+    description = fields.Str()
+    date_creation = fields.DateTime()
+    date_modification = fields.DateTime()
+
+class CentreVoteSchema(Schema):
+    id = fields.Int()
+    nom = fields.Str()
+    adresse = fields.Str()
+    circonscription_id = fields.Int()
+    date_creation = fields.DateTime()
+    date_modification = fields.DateTime()
+
+class BureauVoteSchema(Schema):
+    id = fields.Int()
+    nom = fields.Str()
+    centre_id = fields.Int()
+    electeurs_inscrits = fields.Int()
     personne_contact = fields.Str()
     telephone_contact = fields.Str()
-    est_actif = fields.Bool(default=True)
-    date_creation = fields.DateTime(dump_only=True)
-    date_modification = fields.DateTime(dump_only=True)
+    localisation = fields.Dict()
+    est_actif = fields.Bool()
+    date_creation = fields.DateTime()
+    date_modification = fields.DateTime()
 
 class JournalAuditSchema(Schema):
     id = fields.Int(dump_only=True)

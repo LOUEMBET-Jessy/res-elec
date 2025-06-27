@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models.election import Election, Candidate, VotingCenter, VotingOffice, VotingResult, ResultatElection
-from app.schemas import ElectionSchema, CandidatSchema, BureauDeVoteSchema, ResultatElectionSchema
+from app.models.election import Election, Candidate, CentreVote, BureauVote, ResultatElection, Circonscription
+from app.schemas import ElectionSchema, CandidatSchema, BureauVoteSchema, ResultatElectionSchema
 from app import db
 from app.utils.file_upload import save_file
 import os
@@ -257,13 +257,13 @@ def add_voting_center(election_id):
         data = request.get_json()
         data['election_id'] = election_id
         
-        center = VotingCenter(**data)
+        center = CentreVote(**data)
         db.session.add(center)
         db.session.commit()
 
         return jsonify({
             'message': 'Voting center added successfully',
-            'center': BureauDeVoteSchema().dump(center)
+            'center': BureauVoteSchema().dump(center)
         }), 201
 
     except Exception as e:
@@ -278,13 +278,13 @@ def add_voting_office(center_id):
         data = request.get_json()
         data['center_id'] = center_id
         
-        office = VotingOffice(**data)
+        office = BureauVote(**data)
         db.session.add(office)
         db.session.commit()
 
         return jsonify({
             'message': 'Voting office added successfully',
-            'office': BureauDeVoteSchema().dump(office)
+            'office': BureauVoteSchema().dump(office)
         }), 201
 
     except Exception as e:
@@ -297,7 +297,7 @@ def add_voting_office(center_id):
 def add_voting_results(office_id):
     try:
         data = request.get_json()
-        office = VotingOffice.query.get_or_404(office_id)
+        office = BureauVote.query.get_or_404(office_id)
         
         # Update office statistics
         office.total_voters = data.get('total_voters', 0)
@@ -314,7 +314,7 @@ def add_voting_results(office_id):
         db.session.commit()
         return jsonify({
             'message': 'Voting results added successfully',
-            'office': BureauDeVoteSchema().dump(office)
+            'office': BureauVoteSchema().dump(office)
         }), 201
 
     except Exception as e:
@@ -327,7 +327,7 @@ def add_voting_results(office_id):
 def get_election_results(election_id):
     try:
         election = Election.query.get_or_404(election_id)
-        centers = VotingCenter.query.filter_by(election_id=election_id).all()
+        centers = CentreVote.query.filter_by(election_id=election_id).all()
         
         results = {
             'election': election_schema.dump(election),
@@ -339,7 +339,7 @@ def get_election_results(election_id):
         }
         
         for center in centers:
-            center_data = BureauDeVoteSchema().dump(center)
+            center_data = BureauVoteSchema().dump(center)
             center_total_voters = 0
             center_blank_votes = 0
             center_null_votes = 0

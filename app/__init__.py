@@ -31,6 +31,6 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(election_bp, url_prefix='/api/elections')
     app.register_blueprint(candidate_bp, url_prefix='/api/candidates')
-    app.register_blueprint(voting_bp, url_prefix='/api/voting')
+    app.register_blueprint(voting_bp)
 
     return app
