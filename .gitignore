@@ -1,0 +1,48 @@
+# Environnements virtuels
+venv/
+.env
+.env.*
+
+# Fichiers de configuration sensibles
+instance/
+config/*.pyc
+config/config.py
+config/local_settings.py
+
+# Base de données locale
+*.db
+*.sqlite3
+instance/*.db
+
+# Fichiers de migration générés
+migrations/versions/
+
+# Fichiers temporaires et caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.pot
+*.mo
+*.swp
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# Fichiers d'uploads utilisateurs
+uploads/
+
+# Fichiers de test
+.coverage
+htmlcov/
+.tox/
+
+# Fichiers générés par l'IDE
+.idea/
+.vscode/
+*.iml
+
+# Fichiers Mermaid et exports
+schema.mmd
+schema_relationnel.* 
